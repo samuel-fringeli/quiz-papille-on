@@ -72,10 +72,27 @@ function Question(title, answers, answerCorrect) {
         this.answers.forEach((answer, index) => {
             let answerElement =  document.createElement("li");
             answerElement.classList.add("answers");
-            answerElement.textContent = answer;
+
+            if (typeof(answer) === 'string') {
+                if (answer.startsWith('./') || answer.startsWith('/') || answer.startsWith('http')) {
+                    answerElement.innerHTML = `<img src="${answer}" class="answer_image" alt="image" />`;
+                } else {
+                    answerElement.textContent = answer;
+                }
+            } else if (typeof(answer) === 'object') {
+                if (answer.hasOwnProperty('text') && answer.hasOwnProperty('image')) {
+                    answerElement.innerHTML = `<div class="answer_text">${answer.text}</div><img src="${answer.image}" class="answer_image" alt="image" />`;
+                } else if (answer.hasOwnProperty('text')) {
+                    answerElement.textContent = answer.text;
+                } else if (answer.hasOwnProperty('image')) {
+                    answerElement.innerHTML = `<img src="${answer.image}" class="answer_image" alt="image" />`;
+                }
+            }
+
             answerElement.id = index + 1;
             answerElement.addEventListener("click", this.checkAnswer)
 
+            console.log({ answerElement });
             questionAnswer.append(answerElement);
         });
 
@@ -144,21 +161,36 @@ function Question(title, answers, answerCorrect) {
 let quiz = new Quiz();
 
 // Exemple : Réponses multiple (entre crochet, N° de réponse correcte (1) séparer d'une virgule puis N° deréponse correcte (2))
-let question1 = new Question("Quel est ou quels sont les thèmes traités par l'Association Papille-ON", ["L'alimentation", "Le réseautage alimentaire", "La permaculture", "Le réchauffement climatique"], [1,2]);
+let question1 = new Question("Quel est ou quels sont les thèmes traités par l'Association Papille-ON",
+    ["L'alimentation", "Le réseautage alimentaire", "La permaculture", "Le réchauffement climatique"],
+    [1,2]);
 quiz.addQuestion(question1);
 
 // Exemple : Réponse unique (N° de réponse correcte (1))
-let question2 = new Question("De quel livre sont extraites les questions de ce Quiz ?", ["Le Dictionnaire de le Survie alimentaire", "Apprendre à se nourir sainement", "L'abécédaire de l'alimentation"], 1);
+let question2 = new Question("De quel livre sont extraites les questions de ce Quiz ?",
+    ["Le Dictionnaire de le Survie alimentaire", "Apprendre à se nourir sainement", "L'abécédaire de l'alimentation"],
+    [1]);
 quiz.addQuestion(question2);
 
-let question3 = new Question("Qui est l'auteur de ce dictionnaire alimentaire ?", ["Hervé Pasquier", "Valentin Pasquier", "Sylvain Pasquier"], 2);
+let question3 = new Question("Qui est l'auteur de ce dictionnaire alimentaire ?",
+    ["Hervé Pasquier", "Valentin Pasquier", "Sylvain Pasquier"],
+    [2]);
 quiz.addQuestion(question3);
 
-let question4 = new Question("Quelle image est en rouge ?", ["Image 01", "Image 02", "Image 03", "Image 04",  "Image 05",  "Image 06"], 4);
+let question4 = new Question("Quelle image est en rouge ?",
+    [{ image: "./00-images/image-01.jpg", text: 'image 1' },
+        { image: "./00-images/image-02.jpg", text: 'image 2' },
+        { image: "./00-images/image-03.jpg", text: 'image 3' },
+        { image: "./00-images/image-04.jpg", text: 'image 4' },
+        { image: "./00-images/image-05.jpg", text: 'image 5' },
+        { image: "./00-images/image-06.jpg", text: 'image 6' }],
+    [4]);
 quiz.addQuestion(question4);
 
-
-
+let question5 = new Question("Quelle image est en rouge ?",
+    ["./00-images/image-01.jpg", "./00-images/image-02.jpg", "./00-images/image-03.jpg", "./00-images/image-04.jpg",  "./00-images/image-05.jpg",  "./00-images/image-06.jpg"],
+    [4]);
+quiz.addQuestion(question5);
 
 // Ici je suis obligé de passer par un querySelectroAll pour avoir accès à la fonction ForEach (car le getElement ne le possède pas)
 let NbrQuestion = document.querySelectorAll(".nbrQuestion");

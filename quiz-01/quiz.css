@@ -1,0 +1,142 @@
+@import url('https://fonts.googleapis.com/css2?family=Abyssinica+SIL&display=swap');
+
+body {
+    background: rgb(255,255,255);
+}
+
+.btn_return-menu {
+    margin: 10px 10px;
+    width: 35px !important;
+    height: 35px !important;
+    background-image: url(../00-template/images/ico-menu-off.png);
+    background-size: cover;
+}
+
+.btn_return-menu:hover {
+    background-image: url(../00-template/images/ico-menu-on.png);
+    background-size: cover;
+}
+
+.main_content {
+    text-align: center;
+    animation-name: slide;
+    animation-duration: 1000ms;
+}
+
+.title {
+    margin-top: 30px;
+    text-align: center;
+}
+
+.subtitle {
+    margin-top: 0px;
+    margin-bottom: 50px;
+    text-align: center;
+}
+
+
+.info_question {
+    font-size: 18px;
+}
+
+.nbrQuestion {
+    font-weight: bold;
+    color: #302780;
+
+}
+
+#nbrCorrects {
+    font-weight: bold;
+    color: #302780;   
+}
+
+
+#btn_start {
+    margin-top: 70px;
+}
+
+.start, #validate-btn {
+    padding: 10px;
+    border-radius: 5px;
+    color:#fff;
+    font-size: 16px;
+    text-decoration: none;
+    background: linear-gradient(to bottom,#302780 40%,#231859 100%);
+    cursor: pointer;
+}
+
+.start:hover, #validate-btn:hover {
+    color:#f6d214;
+}
+
+
+.header_screen {
+    display: block;
+}
+
+.questions_screen {
+    display: none;
+}
+
+    .title_questions {
+        font-size: 25px;
+        text-decoration: none;
+        color: #302780;
+    }
+
+    .list_questions {
+        margin: 0px 50px 0px 0px;
+        font-size: 20px;
+        list-style: none;
+    }
+
+        .answers {
+            margin-bottom: 35px;
+            padding: 5px;
+            color:#fff;
+            background: #302780;
+            cursor: pointer;
+        }
+
+        .answers:hover {
+            color:#f6d214;
+        }
+
+        .answersCorrect {
+            background-color: rgb(13, 188, 13) !important;
+        }
+
+        .answersSelected {
+            color: #302780;
+            border: solid 1px #302780;
+            background-color: #fff;
+        }
+
+        .answersCorrect:hover {
+            background-color: rgb(13, 188, 13);
+        }
+
+        .answersWrong {
+            background-color: rgb(191, 13, 13) !important;
+        }
+
+        .answersWrong:hover {
+            background-color: rgb(191, 13, 13);
+        }
+
+    .avancement_question {
+        font-size: 20px;
+        margin-top: 2%;
+    }
+
+.result_screen {
+    display: none;
+    font-size: 22px;
+}
+
+.recommandation-container {
+    margin-top: 30px;
+    padding: 5px 0px 30px 0px;
+    color: #fff;
+    background-color: #302780;
+}

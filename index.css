@@ -1,0 +1,52 @@
+@import url('https://fonts.googleapis.com/css2?family=Abyssinica+SIL&display=swap');
+
+body {
+    background-color: rgb(255, 255, 255);
+}
+
+.logo {
+    text-align: center;
+}
+
+.img_logo {
+    margin-top: 5%;
+    width: auto;
+    height: 250px;
+}
+
+.title {
+    margin-top: 30px;
+    text-align: center;
+}
+
+.subtitle {
+    margin-top: 50px;
+    margin-bottom: 50px;
+    text-align: center;
+}
+
+.content {
+    text-align: center;
+}
+
+    .quiz-01, .quiz-02, .quiz-03 {
+        margin-bottom: 35px;
+    }
+
+        .btn_quiz-01, .btn_quiz-02, .btn_quiz-03 {
+            padding: 10px;
+            border-radius: 5px;
+            color:#fff;
+            font-size: 16px;
+            text-decoration: none;
+            background: linear-gradient(to bottom,#302780 40%,#231859 100%);
+        }
+
+        .btn_quiz-01:hover, .btn_quiz-02:hover, .btn_quiz-03:hover {
+            color:#f6d214;
+        }
+
+
+
+
+

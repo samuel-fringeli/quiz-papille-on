@@ -6,12 +6,18 @@ let result_screen = document.getElementById("result_screen");
 // Etablir la fonction Quiz permettant d'ajouter des questions et de voir combien de bonnes réponse le user a
 function Quiz(){
     this.questions = [];
-    this.nbrCorrects = 0;
+    this.nbrPoints = 0;
     this.indexCurrentQuestion = 0;
 
     // Ajouts de questions
     this.addQuestion = function(question) {
         this.questions.push(question);
+    }
+
+    // fonction permettant de savoir combien il y a de points au maximum
+    this.maxPoints = function() {
+        return this.questions.map(q => q.answerPoints
+            .filter(p => p >= 0).reduce((a, b) => a + b, 0)).reduce((a, b) => a + b, 0);
     }
 
     // Fonction servant à passer à la question suivante s'il y en a une, sinon ça affiche le résultat final
@@ -24,8 +30,10 @@ function Quiz(){
         else {
             questions_screen.style.display = "none";
 
-            let NbrCorrectUser = document.querySelector("#nbrCorrects");
-            NbrCorrectUser.textContent = quiz.nbrCorrects;
+            let nbrPercentPointsEl = document.querySelector("#nbrPercentPoints")
+            let nbrPercentPoints = Math.round(this.nbrPoints / this.maxPoints() * 100)
+            nbrPercentPointsEl.textContent = nbrPercentPoints.toString()
+
             result_screen.style.display = "block";
             document.getElementById('validate-btn').style.display = 'none';
 
@@ -34,12 +42,12 @@ function Quiz(){
     }
     // Valeur de résulat + recommandation textuelle
     this.recommendation_result = function() {
-        let current_score = this.nbrCorrects
+        let nbrPercentPoints = Math.round(this.nbrPoints / this.maxPoints() * 100)
         let result = ''
 
-        if (current_score < 2) {
+        if (nbrPercentPoints < 40) {
             result = "Votre alimentation n'est malheureusement pas du tout saine, nous vous conseillons d'y remédier pour votre bonne santé !";
-        } else if (current_score < 3) {
+        } else if (nbrPercentPoints < 60) {
             result = "Votre alimentation est partiellement saine, vous êtes sur la bonne voie !";
         } else {
             result = "Votre alimentation est très saine ! Un grand bravo !";
@@ -51,10 +59,16 @@ function Quiz(){
 
 
 // Fonction Question permettant de créer les questions avec le titre, les réponses et la réponse correcte
-function Question(title, answers, answerCorrect) {
-    this.title = title,
-    this.answers = answers,
-    this.answerCorrect = !Array.isArray(answerCorrect) ? [answerCorrect]:answerCorrect,
+function Question(title, answers, answerCorrect, answerPoints) {
+    this.title = title
+    this.answers = answers
+    this.answerCorrect = !Array.isArray(answerCorrect) ? [answerCorrect]:answerCorrect
+    this.answerPoints = !Array.isArray(answerPoints) ? [answerPoints]:answerPoints
+
+    if (answerPoints.length !== answers.length) {
+        alert("Toutes les réponses ne sont pas associées à un nombre de points (même nul)");
+        return;
+    }
 
     // Mise en place et structuration du HTML et CSS pour mes questions
     this.getElement = function(indexQuestion, nbrOfQuestions) {
@@ -72,6 +86,7 @@ function Question(title, answers, answerCorrect) {
         this.answers.forEach((answer, index) => {
             let answerElement =  document.createElement("li");
             answerElement.classList.add("answers");
+            answerElement.classList.add("points_" + this.answerPoints[index]);
 
             if (typeof(answer) === 'string') {
                 if (answer.startsWith('./') || answer.startsWith('/') || answer.startsWith('http')) {
@@ -81,7 +96,8 @@ function Question(title, answers, answerCorrect) {
                 }
             } else if (typeof(answer) === 'object') {
                 if (answer.hasOwnProperty('text') && answer.hasOwnProperty('image')) {
-                    answerElement.innerHTML = `<div class="answer_text">${answer.text}</div><img src="${answer.image}" class="answer_image" alt="image" />`;
+                    answerElement.innerHTML = `<div class="answer_text">${answer.text}</div>
+                        <img src="${answer.image}" class="answer_image" alt="image" />`;
                 } else if (answer.hasOwnProperty('text')) {
                     answerElement.textContent = answer.text;
                 } else if (answer.hasOwnProperty('image')) {
@@ -91,8 +107,6 @@ function Question(title, answers, answerCorrect) {
 
             answerElement.id = index + 1;
             answerElement.addEventListener("click", this.checkAnswer)
-
-            console.log({ answerElement });
             questionAnswer.append(answerElement);
         });
 
@@ -102,7 +116,6 @@ function Question(title, answers, answerCorrect) {
         questionNumber.textContent = "Questions : " + indexQuestion + "/" + nbrOfQuestions;
 
         questions_screen.append(questionNumber);
-
         questions_screen.append(questionAnswer);
     }
 
@@ -125,7 +138,7 @@ function Question(title, answers, answerCorrect) {
     this.isCorrectAnswer = function(answerUser) {
         for (let i = 0; i < this.answerCorrect.length; i++) {
             let currentAnswer = this.answerCorrect[i];
-            if(answerUser == currentAnswer) {
+            if (answerUser.toString() === currentAnswer.toString()) {
                 return true;
             }
         }
@@ -136,7 +149,14 @@ function Question(title, answers, answerCorrect) {
         let answers = document.querySelectorAll('.list_questions .answers')
         let all_answers_correct = true
         for (let answerSelect of answers) {
-            if(this.isCorrectAnswer(answerSelect.id)) {
+            // incrémentation nombre de points
+            if (answerSelect.classList.contains('answersSelected')) {
+                quiz.nbrPoints += parseInt(Array.from(answerSelect.classList)
+                    .find(c => c.startsWith('points_'))
+                    .replace('points_', ''));
+            }
+
+            if (this.isCorrectAnswer(answerSelect.id)) {
                 if (!answerSelect.classList.contains('answersSelected')) {
                     all_answers_correct = false
                 }
@@ -149,9 +169,6 @@ function Question(title, answers, answerCorrect) {
                 answerSelect.classList.add("answersWrong");
             }
         }
-        if (all_answers_correct) {
-            quiz.nbrCorrects++;
-        }
     }
 }
 
@@ -160,21 +177,26 @@ function Question(title, answers, answerCorrect) {
 // Partie Création des mes données de Questions :
 let quiz = new Quiz();
 
-// Exemple : Réponses multiple (entre crochet, N° de réponse correcte (1) séparer d'une virgule puis N° deréponse correcte (2))
+// Exemple : Réponses multiple (entre crochet, N° de réponse correcte (1) séparer d'une virgule puis N° de réponse correcte (2))
 let question1 = new Question("Quel est ou quels sont les thèmes traités par l'Association Papille-ON",
     ["L'alimentation", "Le réseautage alimentaire", "La permaculture", "Le réchauffement climatique"],
-    [1,2]);
+    [1,2],
+    [10,10,-10,-10]);
 quiz.addQuestion(question1);
 
 // Exemple : Réponse unique (N° de réponse correcte (1))
 let question2 = new Question("De quel livre sont extraites les questions de ce Quiz ?",
-    ["Le Dictionnaire de le Survie alimentaire", "Apprendre à se nourir sainement", "L'abécédaire de l'alimentation"],
-    [1]);
+    ["Le Dictionnaire de le Survie alimentaire",
+        "Apprendre à se nourir sainement",
+        "L'abécédaire de l'alimentation"],
+    [1],
+    [10,0,0]);
 quiz.addQuestion(question2);
 
 let question3 = new Question("Qui est l'auteur de ce dictionnaire alimentaire ?",
     ["Hervé Pasquier", "Valentin Pasquier", "Sylvain Pasquier"],
-    [2]);
+    [2],
+    [0,10,0]);
 quiz.addQuestion(question3);
 
 let question4 = new Question("Quelle image est en rouge ?",
@@ -184,23 +206,21 @@ let question4 = new Question("Quelle image est en rouge ?",
         { image: "./00-images/image-04.jpg", text: 'image 4' },
         { image: "./00-images/image-05.jpg", text: 'image 5' },
         { image: "./00-images/image-06.jpg", text: 'image 6' }],
-    [4]);
+    [4],
+    [0,0,0,10,0,0]);
 quiz.addQuestion(question4);
 
 let question5 = new Question("Quelle image est en rouge ?",
-    ["./00-images/image-01.jpg", "./00-images/image-02.jpg", "./00-images/image-03.jpg", "./00-images/image-04.jpg",  "./00-images/image-05.jpg",  "./00-images/image-06.jpg"],
-    [4]);
+    ["./00-images/image-01.jpg", "./00-images/image-02.jpg", "./00-images/image-03.jpg",
+        "./00-images/image-04.jpg",  "./00-images/image-05.jpg",  "./00-images/image-06.jpg"],
+    [4],
+    [0,0,0,10,0,0]);
 quiz.addQuestion(question5);
 
-// Ici je suis obligé de passer par un querySelectroAll pour avoir accès à la fonction ForEach (car le getElement ne le possède pas)
-let NbrQuestion = document.querySelectorAll(".nbrQuestion");
+// nombre de questions sur la page d'entrée du quiz
+document.getElementById('nbrQuestion').textContent = quiz.questions.length;
 
-NbrQuestion.forEach(function(NbrQuestion) {
-    NbrQuestion.textContent = quiz.questions.length;
-});
-
-
-// Fonction servant à lancer le questionnaire en enlevant la page d'introduction du quiz et en mettant la première question
+// Fonction servant à lancer le questionnaire en enlevant la page d'introduction du quiz et en mettant la 1e question
 function startQuestions() {
     header_screen.style.display = "none";
     questions_screen.style.display = "block";
@@ -219,7 +239,6 @@ document.getElementById('validate-btn').addEventListener('click', (ev) => {
         quiz.displayCurrentQuestion();
     }, 500)
 });
-
 
 // Récupérer le bouton dans mon html avec le ElementById car le ElementsByClassName n'a pas le addEventListener)
 let btn_start = document.getElementById("btn_start");

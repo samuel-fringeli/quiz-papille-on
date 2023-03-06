@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="./quiz.css">
 </head>
 <body>
-   
+
    <a href="../index.html"><div class="btn_return-menu" href="../index.html"></div></a>
 
     <div class="main_content">
@@ -24,27 +24,27 @@
             <div class="subtitle">
                 <h4 class="uk-h2">Testez votre alimentation</h4>
             </div>
-            <span class="info_question"> Ce test comporte un total de <span class="nbrQuestion"> ?? </span> questions </span>
+            <span class="info_question"> Ce test comporte un total de <span id="nbrQuestion"> ?? </span> questions </span>
             <div id="btn_start">
                 <a class="start">Commencer</a>
             </div>
         </div>
 
         <div id="questions_screen" class="questions_screen">
-            
+
         </div>
         <center><button id="validate-btn" style="display: none;">Valider</button></center>
 
         <div id="result_screen" class="result_screen">
             <h3 class="uk-h1"> Résultat </h3>
-            <span class=""> Vous avez <span id="nbrCorrects"> ?? </span> réponses correctes sur <span class="nbrQuestion"> ?? </span> </span>
+            <span class=""> Vous avez <span id="nbrPercentPoints"> ?? </span>% des points corrects.</span>
             <div class="recommandation-container">
                 <h4 class="uk-h3">Recommandation :</h4>
                 <span class=""><span id="recommationResultat"> ?? </span></span>
             </div>
 
         </div>
-        
+
     </div>
 
     <script src="./quiz.js"></script>

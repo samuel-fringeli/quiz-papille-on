@@ -84,7 +84,7 @@ function Question(title, answers, answerCorrect, answerPoints) {
 
         // Boucle en ForEach pour placer à chaque fois un <li> pour chaque réponse
         this.answers.forEach((answer, index) => {
-            let answerElement =  document.createElement("li");
+            let answerElement = document.createElement("li");
             answerElement.classList.add("answers");
             answerElement.classList.add("points_" + this.answerPoints[index]);
 
@@ -92,14 +92,14 @@ function Question(title, answers, answerCorrect, answerPoints) {
                 if (answer.startsWith('./') || answer.startsWith('/') || answer.startsWith('http')) {
                     answerElement.innerHTML = `<img src="${answer}" class="answer_image" alt="image" />`;
                 } else {
-                    answerElement.textContent = answer;
+                    answerElement.innerHTML = answer;
                 }
             } else if (typeof(answer) === 'object') {
                 if (answer.hasOwnProperty('text') && answer.hasOwnProperty('image')) {
                     answerElement.innerHTML = `<div class="answer_text">${answer.text}</div>
                         <img src="${answer.image}" class="answer_image" alt="image" />`;
                 } else if (answer.hasOwnProperty('text')) {
-                    answerElement.textContent = answer.text;
+                    answerElement.innerHTML = answer.text;
                 } else if (answer.hasOwnProperty('image')) {
                     answerElement.innerHTML = `<img src="${answer.image}" class="answer_image" alt="image" />`;
                 }
@@ -179,7 +179,7 @@ let quiz = new Quiz();
 
 // Exemple : Réponses multiple (entre crochet, N° de réponse correcte (1) séparer d'une virgule puis N° de réponse correcte (2))
 let question1 = new Question("Quel est ou quels sont les thèmes traités par l'Association Papille-ON",
-    ["L'alimentation", "Le réseautage alimentaire", "La permaculture", "Le réchauffement climatique"],
+    ["L'alimentation", "Le réseautage alimentaire<br>Le réseautage alimentaire 2<br>Le réseautage alimentaire 3<br>Le réseautage alimentaire 4", "La permaculture", "Le réchauffement climatique"],
     [1,2],
     [10,10,-10,-10]);
 quiz.addQuestion(question1);

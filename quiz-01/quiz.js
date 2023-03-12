@@ -74,7 +74,7 @@ function Question(title, answers, answerCorrect, answerPoints) {
     this.getElement = function(indexQuestion, nbrOfQuestions) {
         let questionTitle = document.createElement("h3");
         questionTitle.classList.add("title_questions");
-        questionTitle.textContent = this.title;
+        questionTitle.innerHTML = this.title;
 
         // Le append sert à afficher le html (il existe le after et le prepend si on veut afficher au-dessus ou en-dessous)
         questions_screen.append(questionTitle);
@@ -178,7 +178,7 @@ function Question(title, answers, answerCorrect, answerPoints) {
 let quiz = new Quiz();
 
 // Exemple : Réponses multiple (entre crochet, N° de réponse correcte (1) séparer d'une virgule puis N° de réponse correcte (2))
-let question1 = new Question("Quel est ou quels sont les thèmes traités par l'Association Papille-ON",
+let question1 = new Question("Quel est ou quels sont les thèmes traités par l'Association Papille-ON 1<br>Quel est ou quels sont les thèmes traités par l'Association Papille-ON 2",
     ["L'alimentation", "Le réseautage alimentaire<br>Le réseautage alimentaire 2<br>Le réseautage alimentaire 3<br>Le réseautage alimentaire 4", "La permaculture", "Le réchauffement climatique"],
     [1,2],
     [10,10,-10,-10]);
